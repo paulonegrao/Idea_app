@@ -1,0 +1,26 @@
+<h1>All Ideas</h1>
+<% @idea.each do |idea| %>
+<hr>
+<h2><%= idea.title %></h2>
+<h3><%= idea.body %></h3>
+  By:<%= mail_to User.find_by_id(idea.user_id).email, User.find_by_id(idea.user_id).first_name%>
+
+  <% if !(idea.user_id == current_user) %>
+    <% if user_signed_in? && idea.joined_by?(current_user) %>
+         <%= link_to fa_icon("chain"), idea_join_path(idea, idea.join_for(current_user)), method: :delete, class: "icon-big" %>
+    <% else %>
+         <%= link_to fa_icon("chain-broken"), idea_joins_path(idea), method: :post, class: "icon-big" %>
+    <% end %>
+
+    <% if user_signed_in? && idea.liked_by?(current_user) %>
+    		 <%= link_to fa_icon("thumbs-up"), idea_like_path(idea, idea.like_for(current_user)), method: :delete, class: "icon-big" %>
+    <% else %>
+    		 <%= link_to fa_icon("thumbs-o-up"), idea_likes_path(idea), method: :post, class: "icon-big" %>
+    <% end %>
+  <% end %>
+  <div class="pull-right">
+    Members: <%= idea.joins.count %>
+   	&nbsp;| Likes: <%= idea.likes.count%>
+  </div>
+
+<% end %>

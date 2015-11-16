@@ -1,0 +1,45 @@
+<h1><%= @idea.title %></h1>
+<p><%= @idea.body %></p>
+
+<% if @idea.user %>
+  <p>
+    Members:
+    <% array = [] %>
+		<%  @idea.joining_users.each do |u|  %>
+      <% array << u.first_name %>
+    <% end %>
+    <%= array.join(", ")%>
+  </p>
+<% end %>
+
+
+<% if can? :edit, @idea  %>
+  <%= link_to "Edit", edit_idea_path(@idea), class: "btn btn-info btn-sm" %>
+<% end %>
+<% if can? :destroy, @idea  %>
+  <%= link_to("Delete", idea_path(@idea), {method: :delete,
+                                            class: "btn btn-danger btn-sm",
+                                            data:   {confirm: "Are you sure?"}}) %>
+<% end %>
+
+<h2>Create a Comment</h2>
+
+<%= @comment.errors.full_messages.join(", ") %>
+<%= form_for [@idea, @comment] do |f| %>
+  <div class="form-group">
+    <%= f.label :body %>
+    <%= f.text_area :body, class: "form-control" %>
+  </div>
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>
+
+<h2>Comments</h2>
+<% @idea.comments.each do |comment| %>
+  <div class="well">
+    <%= comment.body %>
+    <% if can? :destroy, comment %>
+      <%= link_to "Delete", idea_comment_path(@idea, comment), method: :delete,
+                  class: "btn btn-danger delete-right", data: {confirm: "Are you sure?"} %>
+    <% end %>
+  </div>
+<% end %>
