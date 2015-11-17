@@ -10,4 +10,6 @@ class User < ActiveRecord::Base
 
   has_many :joins, dependent: :nullify
 	has_many :joined_ideas, through: :likes, source: :idea
+
+  validates :email, presence: true, uniqueness: true
 end
